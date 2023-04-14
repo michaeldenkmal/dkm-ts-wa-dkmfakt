@@ -1,0 +1,2 @@
+pushd .\model
+git add
