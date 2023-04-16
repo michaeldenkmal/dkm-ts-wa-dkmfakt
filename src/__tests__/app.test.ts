@@ -2,7 +2,7 @@ if (process.env.NODE_ENV !== 'production') {
     Error.stackTraceLimit = Infinity 
   } 
 import { DkmRestRequest, DkmRestResponse } from "../dkm_rest_types";
-import { initDb } from "../../util/local_settings";
+import { initDb } from "../util/local_settings";
 import * as drr from "../dkm_rest_router"
 describe("app",()=> {
     initDb("D:\\projekte\\ts\\dkm-ts-wa-dkmfakt\\local_conf\\offh.ini");

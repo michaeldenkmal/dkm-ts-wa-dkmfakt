@@ -1,6 +1,7 @@
 import { rejects } from "assert";
 import { promises } from "dns";
 import { IncomingMessage, ServerResponse } from "http";
+import { readPostFromRequest } from "./dkm_rest_router";
 
 export type TPathParams = Record<string, string>;
 
@@ -11,6 +12,7 @@ export interface TPathHandlerOpts {
     req:DkmRestRequest
     res:DkmRestResponse
     pathParams?:TPathParams
+    jsonBody?:string
 }
 
 export type TPathHandler =(pho:TPathHandlerOpts)=>Promise<void>
@@ -19,6 +21,7 @@ export type TPathHandler =(pho:TPathHandlerOpts)=>Promise<void>
 export interface DkmRestRequest {
     url:string
     method: string
+    jsonBody?: string
 }
 
 export interface DkmRestResponse {
@@ -48,10 +51,15 @@ async function writeResEnd404(res:ServerResponse, msg?:string):Promise<void> {
 }
 
 
-export function createDkmReq(req:IncomingMessage) :DkmRestRequest {
+export async function createDkmReq(req:IncomingMessage) :Promise<DkmRestRequest> {
+    let jsonBody = "";
+    if (req.method == "POST"){
+        jsonBody = await readPostFromRequest(req);
+    }
     return {
         url:req.url,
-        method: req.method
+        method: req.method,
+        jsonBody
     }
 }
 

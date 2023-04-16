@@ -64,7 +64,8 @@ export function getHandlerByUrl(url:string, method:HTTP_METHOD):GetHandlerByUrlR
 
 
 export async function realHandleRequest(req:IncomingMessage, res:ServerResponse):Promise<void> {
-    return handleRequest( createDkmReq(req), createDkmResp(res));
+    const dkmreq = await createDkmReq(req);
+    return handleRequest( dkmreq, createDkmResp(res));
 }
 
 export async function readPostFromRequest(req:IncomingMessage):Promise<string> {
@@ -99,9 +100,9 @@ export async function handleRequest(dkmreq:DkmRestRequest, dkmres:DkmRestRespons
     const handlerRes = getHandlerByUrl(dkmreq.url,dkmreq.method as any as HTTP_METHOD);
 
     if (handlerRes.handler) {
-
         const handlerOpts:TPathHandlerOpts = {
-            req:dkmreq, res:dkmres, path:dkmreq.url, pathParams: handlerRes.pathParams
+            req:dkmreq, res:dkmres, path:dkmreq.url, pathParams: handlerRes.pathParams,
+            jsonBody:dkmreq.jsonBody
         }
         await handlerRes.handler(handlerOpts);
     }
